@@ -185,11 +185,18 @@ static struct sock
 			found_unused = true;
 		}
 
-		if (preferred_path_index)
+		if (!mpcb->allow_data_on_subflows) {
+			if (!tp->mptcp->slave_sk) {
+				bestsk = sk;
+				break;
+			}
+		}
+		else if (preferred_path_index) {
 			if ((preferred_path_index | tp->mptcp->path_index) ==
 				preferred_path_index) {
 				bestsk = sk;
 				break;
+			}
 		}
 
 		if (tp->srtt_us < min_srtt) {
@@ -216,9 +223,16 @@ static struct sock
 			*force = false;
 	}
 
-	if (preferred_path_index && bestsk &&
-	    ((preferred_path_index | tcp_sk(bestsk)->mptcp->path_index)) !=
-		preferred_path_index) {
+	if (!mpcb->allow_data_on_subflows) {
+		if (tcp_sk(bestsk)->mptcp->slave_sk) {
+			bestsk = NULL;
+			*force = true;
+		}
+	}
+
+	else if (preferred_path_index && bestsk &&
+		((preferred_path_index | tcp_sk(bestsk)->mptcp->path_index) !=
+		preferred_path_index)) {
 		bestsk = NULL;
 		*force = true;
 	}

@@ -2714,6 +2714,11 @@ static int do_tcp_setsockopt(struct sock *sk, int level,
 			return -EOPNOTSUPP;
 		tp->mpcb->est_threshold = val;
 		break;
+	case MPTCP_ALLOW_DATA_ON_SUBFLOW:
+		if (!mptcp(tp))
+			return -EOPNOTSUPP;
+		tp->mpcb->allow_data_on_subflows = val;
+		break;
 
 #endif
 	default:

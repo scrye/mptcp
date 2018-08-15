@@ -121,6 +121,7 @@ enum {
 #define MPTCP_SET_SUB_EST_THRESHOLD 72
 #define MPTCP_GET_SUB_EST_THRESHOLD 73
 #define MPTCP_GET_SUB_EST_COUNT     74
+#define MPTCP_ALLOW_DATA_ON_SUBFLOW 75
 
 struct mptcp_sub_status {
 	__u8	id;
